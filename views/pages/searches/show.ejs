@@ -4,37 +4,40 @@
 <%- include('../../layout/head')%>
 
     <body>
-        <header id="search-result">
-            <h1> Search results </h1>
-        </header>
-        <div class="container">
-            <% booksList.forEach(item=>{ %>
-                <div>
-                    <article class="book">
-                        <img src="<%=item.imgURL %>" alt='<%= item.title %>'>
-                        <h5>
-                            <%= item.title %>
-                        </h5>
-                        <h4 class="">
-                            <%= item.author %>
-                        </h4>
-                        <p>
-                            <%= item.description %>
-                        </p>
-                        <%# send data to server%>
-                            <form action="/books" method="POST">
-                                <input type="hidden" name="image" value="<%= item.imgURL %>">
-                                <input type="hidden" name="title" value="<%= item.title %>">
-                                <input type="hidden" name="author" value="<%= item.author %>">
-                                <input type="hidden" name="description" value="<%= item.description %>">
-                                <input type="hidden" name="isbn" value="<%= item.isbn %>">
-                                <input type="hidden" name="isbn" value="<%= item.id %>">
-                                <button>Select This Book</button>
-                            </form>
-                    </article>
+        <%- include('../../layout/navbar')%>
+            <header id="search-result">
+                <h1> Search results </h1>
+            </header>
+            <main>
+                <div class="grid">
+                    <% booksList.forEach(item=>{ %>
+                        <div class="grid-item">
+                            <article class="book">
+                                <img src="<%=item.imgURL %>" alt='<%= item.title %>'>
+                                <h5>
+                                    <%= item.title %>
+                                </h5>
+                                <h4 class="">
+                                    <%= item.author %>
+                                </h4>
+                                <p>
+                                    <%= item.description %>
+                                </p>
+                                <%# send data to server%>
+                                    <form action="/books" method="POST">
+                                        <input type="hidden" name="image" value="<%= item.imgURL %>">
+                                        <input type="hidden" name="title" value="<%= item.title %>">
+                                        <input type="hidden" name="author" value="<%= item.author %>">
+                                        <input type="hidden" name="description" value="<%= item.description %>">
+                                        <input type="hidden" name="isbn" value="<%= item.isbn %>">
+                                        <input type="hidden" name="isbn" value="<%= item.id %>">
+                                        <button>Select This Book</button>
+                                    </form>
+                            </article>
+                        </div>
+                        <% }) %>
                 </div>
-                <% }) %>
-        </div>
+            </main>
     </body>
 
 </html>
