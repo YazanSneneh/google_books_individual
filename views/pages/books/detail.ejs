@@ -1,24 +1,52 @@
-<!DOCTYPE html>
-<html lang="en">
-
 <%- include('../../layout/head')%>
 
     <body>
-        <section>
-            <img src=<%=item.image_url %> alt= <%= item.title %>>
-                <h5>
-                    <%= item.title %>
-                </h5>
-                <h4 class="">
-                    <%= item.author %>
-                </h4>
-                <p>
-                    <%= item.description %>
-                </p>
-                <h3>
-                    isbn: <%= item.isbn %>
-                </h3>
-        </section>
+        <%- include('../../layout/navbar')%>
+            <main>
+                <div class="grid">
+                    <div class="grid-item">
+                        <article class="book">
+                            <img src=<%=item.image_url %>>
+                            <h5>
+                                <%= item.title %>
+                            </h5>
+                            <h4 class="">
+                                <%= item.author %>
+                            </h4>
+                            <p>
+                                <%= item.description %>
+                            </p>
+                            <h3>
+                                isbn: <%= item.isbn %>
+                            </h3>
+                            <div class="details-button-container">
+                                <form class="book-buttons" action="/books/<%= item.id%>?_method=DELETE" method="POST">
+                                    <button> Delete Book</button>
+                                </form>
+                                <div class="book-buttons">
+                                    <button id='btn'> Update Book</button>
+                                </div>
+                            </div>
+                        </article>
+
+
+                    </div>
+                    <form id="update-form" action="/books/<%= item.id%>?_method=PUT" method="POST" style='display:none'
+                        class="show-update-form">
+                        <%- include('../books/edit') %>
+                    </form>
+            </main>
+            <script>
+                let btn = document.getElementById('btn')
+                let form = document.getElementById('update-form')
+                btn.addEventListener('click', () => {
+                    form.style.display = 'block';
+                });
+
+                form.addEventListener('submit', () => {
+                    form.style.display = 'none;'
+                })
+            </script>
     </body>
 
-</html>
+    </html>

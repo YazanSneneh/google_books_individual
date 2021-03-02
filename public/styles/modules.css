@@ -1,39 +1,91 @@
-heaer > h1 {
-    font-size: 2em;
-}
-
-.book{
-    background-color: #e7e6e1;
-    color: #111;
-    padding: 4% 1%;
-}
-
-.book img{
-    width: 70%;
-}
-
-.book p, h4, h5 {
-    margin: 5% 0;
-}
-/* ..................................................................... Form */
-form{
-    width:90%;
-    margin: 5% 10%; 
-    text-align:left;
+/* ...................................... shared style ........................... */
+ button{
+    background-color: #222831;
+    color: #dddddd;
+    width:80%;
+    margin : 2% 0;
+    padding: 4% 0.5%;
  }
- form input, button {
-    background-color: #444;
- 
-   padding: 5% 0;
-   color:#fff;
+
+ a{
+ color: #dddddd;
+ text-decoration: none;
+ font-size: 1.1em;
+ }
+/* ...................................... navbar ................................ */
+nav{
+    padding: 4% 0.5%;
+    background-color: #222831;
+    color: #dddddd;
+    text-align: left;
 }
-.radio-field{
-    display: inline-block;
-    width: 80%;
+/* ...................................... header .................................... */
+header{
+    padding: 5% 0 ;
+    background-color: rgba(49, 78, 82,.6);
+    color : #dddddd;
+}
+/* .......................................... main .................................... */
+main{
+    background-color:#b8b5ff;
 }
 
-button {
-    background-color: #222;
-    color:#fff;
-    padding: 1% 4%;
+/* .................... search form ....................... */
+.search-form{
+    width:100%;
+}
+.search-form > *{
+    width:80%;
+    padding: 5% 1%;
+    margin :1% auto;
+}
+.radio-field {
+    background-color: #dddddd;
+    text-align: left;
+    
+}
+.radio-field input{
+    background-color: #dddddd;
+}
+
+/* .................................. book styles ..................................... */
+.book{
+    background-color: #f2a154;
+    margin : 2% 0;
+    padding: 2% 5%;
+}
+.book >*{
+    margin : 9px 0;
+}
+.book img{
+    width: 50%;
+}
+.book h5, h4{
+    font-size: 1.5em;
+}
+
+
+/* ....... book details buttons style  */
+#update-form{
+    position: fixed;
+    top: 5%;
+    left:5%;
+    bottom: 5%;
+    right: 5%;
+}
+#update-form > *{
+    width:80%;
+    padding: 5% 1%;
+    margin :1% auto;
+}
+.book-buttons{
+    display: inline-block;
+    width: 45%;
+}
+ /* state */
+.show-update-form{
+    padding: 5% 0 ;
+    background-color: rgba(49, 78, 82,.6);
+    color : #dddddd;
+    
 }

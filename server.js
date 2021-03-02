@@ -5,6 +5,8 @@ const cors = require('cors');
 const superagent = require('superagent');
 const path = require('path');
 const pg = require('pg');
+const override = require('method-override');
+const { query } = require('express');
 
 // ...............................................................................CONFIGURATIONS
 let app = express();
@@ -13,12 +15,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs')
+app.use(override('_method'))
 
 require('dotenv').config();
 const PORT = process.env.PORT || 3000;
 
-// const client = new pg.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-const client = new pg.Client(process.env.DATABASE_URL);
+const client = new pg.Client({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+// const client = new pg.Client(process.env.DATABASE_URL);
 
 // ...........................................................................ROUTERS END POINTS
 app.get('/', handelHome);
@@ -28,6 +31,8 @@ app.get('/books/:id', handelSingularBook);
 app.post('/searches', hanelSearch);
 app.post('/books', handleAddBook)
 
+app.put('/books/:id', handleUpdate)
+app.delete('/books/:id', handleDelete)
 app.get('*', handle404);
 // ...........................................................................HANDLERS FUNCTIONS
 
@@ -45,12 +50,10 @@ function handleAddBook(req, res) {
 
     client.query(insertQUery, safeValues)
         .then((data) => {
-            console.log(data.rows[0])
             res.redirect('/books/' + data.rows[0].id);
         }).catch(err => console.log(err))
-
 }
-
+// .....................
 function handelHome(req, res) {
     let selectQuery = 'SELECT * FROM books;';
 
@@ -58,9 +61,9 @@ function handelHome(req, res) {
         .then(data => {
             res.render('pages/index', { data: data.rows, total: data.rowCount })
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
 }
-
+// .....................
 function handelSingularBook(req, res) {
     let query = 'SELECT * FROM books where id =$1';
     let saveValue = [req.params.id];
@@ -70,17 +73,18 @@ function handelSingularBook(req, res) {
             res.render('pages/books/detail', { item: data.rows[0] });
         });
 }
-
+// .....................
 function handelSearchForm(req, res) {
     res.render('pages/searches/new')
 }
-
+// .....................
 function hanelSearch(req, res) {
     let url = 'https://www.googleapis.com/books/v1/volumes';
 
     const searchBook = req.body
     let objectOfData = {
         q: searchBook.search + ' in' + searchBook.term
+
     }
 
     superagent.get(url).query(objectOfData)
@@ -92,6 +96,41 @@ function hanelSearch(req, res) {
         })
 }
 
+// .............................................
+function handleUpdate(req, res) {
+    let book = req.body;
+    let id = req.params.id
+    console.log(book.image)
+    let updateQuery = 'UPDATE books SET author=$1,title=$2,isbn=$3,image_url=$4,description=$5 where id =$6  RETURNING *;'
+    let saveValues = [
+        book.author,
+        book.title,
+        book.isbn,
+        book.image,
+        book.description,
+        id
+    ]
+    client.query(updateQuery, saveValues)
+        .then(() => {
+            res.redirect('/books/' + id);
+        })
+        .catch(err => console.log('error occured', err))
+}
+
+// ...........................
+function handleDelete(req, res) {
+    let id = req.params.id;
+
+    const deleteQuery = 'DELETE FROM books where id=$1;';
+    let safeValues = [id]
+
+    client.query(deleteQuery, safeValues)
+        .then(() => {
+            res.redirect('/')
+        })
+        .catch(error => console.log(error))
+}
+// .....................
 function handle404(req, res) {
     res.send('404! this route dose not exist !!');
 }
@@ -102,12 +141,13 @@ function BookResult(book) {
     this.title = book.volumeInfo.title || 'no title';
     this.author = book.volumeInfo.authors || 'Author unkown';
     this.description = book.volumeInfo.description || 'No discription';
-    this.imgURL = `https:${modifiedImg}`;
+    this.imgURL = `https:${modifiedImg}` || 'https://i.imgur.com/J5LVHEL.jpg';
+    this.isbn = 'no ISBN';
 }
 
 client.connect()
     .then(() => {
-        app.listen(PORT, () => console.log('server is running perfectly .. ', PORT))
+        app.listen(PORT, () => console.log('server is running .. ', PORT))
     })
     .catch(error => console.log('error occured while connecting to database : ', error));
 
